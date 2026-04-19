@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 from src.chromosome import Chromosome, Population
 from src.operators import TournamentSelection, OnePointCrossover, BitflipMutation
-from src.problems import OneMaxProblem, KnapsackProblem
+from src.problems import OneMaxProblem, KnapsackProblem, FeatureSelectionProblem
 from src.ga import GeneticAlgorithm
 
 # Đảm bảo thư mục reports tồn tại ở thư mục gốc chứa project
@@ -50,8 +50,16 @@ def run_experiment(problem_name, problem, pop_size=100, max_gen=300, length=100)
     plt.grid(True)
     plt.legend()
     
-    # Đặt tên file theo chuẩn yêu cầu
-    filename = "onemax_curve_oop.png" if "OneMax" in problem_name else "knapsack_curve_oop.png"
+    if "OneMax" in problem_name:
+        base_name = "onemax"
+    elif "Knapsack" in problem_name:
+        base_name = "knapsack"
+    elif "FeatureSelection" in problem_name:
+        base_name = "feature_selection"
+    else:
+        base_name = "{other_problem}"
+
+    filename = f"{base_name}_curve_oop.png"
     plt.savefig(os.path.join(REPORT_DIR, filename))
     plt.close()
     
@@ -74,6 +82,10 @@ def main():
     knapsack = KnapsackProblem(num_items=100, seed=42)
     results["Knapsack"] = run_experiment("0/1 Knapsack", knapsack, length=100)
     
+    # 3. [BONUS EXTENSION] Chạy bài toán Feature Selection
+    feature_selection = FeatureSelectionProblem(total_features=100, seed=42)
+    results["FeatureSelection"] = run_experiment("FeatureSelection", feature_selection, length=100)
+
     # Lưu toàn bộ dữ liệu ra file JSON
     json_path = os.path.join(REPORT_DIR, "results_oop.json")
     with open(json_path, 'w') as f:

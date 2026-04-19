@@ -4,7 +4,7 @@ import random
 import os
 import matplotlib.pyplot as plt
 
-from src.problems import onemax_fitness, make_knapsack_fitness, generate_random_genes
+from src.problems import onemax_fitness, make_knapsack_fitness, generate_random_genes, make_feature_selection_fitness
 from src.ga import run_ga
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -45,7 +45,16 @@ def run_experiment(problem_name, fitness_func, length=100, pop_size=100, max_gen
     plt.grid(True)
     plt.legend()
     
-    filename = "onemax_curve_fp.png" if "OneMax" in problem_name else "knapsack_curve_fp.png"
+    if "OneMax" in problem_name:
+        base_name = "onemax"
+    elif "Knapsack" in problem_name:
+        base_name = "knapsack"
+    elif "FeatureSelection" in problem_name:
+        base_name = "feature_selection"
+    else:
+        base_name = "{other_problem}"
+
+    filename = f"{base_name}_curve_fp.png"
     plt.savefig(os.path.join(REPORT_DIR, filename))
     plt.close()
     
@@ -67,6 +76,10 @@ def main():
     knapsack_fitness = make_knapsack_fitness(num_items=100, seed=42)
     results["Knapsack"] = run_experiment("0/1 Knapsack", knapsack_fitness)
     
+    # 3. [BONUS EXTENSION] Chạy bài toán Feature Selection (FP)
+    feature_selection_fitness = make_feature_selection_fitness(total_features=100, seed=42)
+    results["FeatureSelection"] = run_experiment("FeatureSelection", feature_selection_fitness, length=100)
+
     # Lưu file JSON
     json_path = os.path.join(REPORT_DIR, "results_fp.json")
     with open(json_path, 'w') as f:

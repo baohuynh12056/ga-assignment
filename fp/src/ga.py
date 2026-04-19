@@ -59,5 +59,5 @@ def run_ga(initial_pop_genes: tuple,
     return {
         "best_genes": final_best[0],
         "best_fitness": final_best[1],
-        "history": list(final_history) # Chuyển về list để dump JSON cho dễ
+        "history": list(final_history) # Chuyển về list để dump JSON 
     }
