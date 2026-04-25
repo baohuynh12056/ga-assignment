@@ -12,36 +12,36 @@ class GeneticAlgorithm:
         self.selection = selection
         self.crossover = crossover
         self.mutation = mutation
-        self.elitism_count = elitism_count # Số lượng tinh hoa giữ lại 
+        self.elitism_count = elitism_count # Number of elite individuals to keep
 
     def run(self, initial_population: Population, fitness_function: Callable[[List[int]], float], max_generations: int) -> Dict[str, Any]:
         current_population = initial_population
         history_best_fitness = []
 
         for generation in range(max_generations):
-            # 1. Đánh giá (Evaluate Fitness)
+            # 1. Evaluate Fitness
             for chromo in current_population.individuals:
                 if chromo.fitness is None:
                     chromo.fitness = fitness_function(chromo.genes)
 
-            # Lưu lại dữ liệu để vẽ biểu đồ
+            # Save data for plotting
             best_chromo = current_population.get_best_individual()
             history_best_fitness.append(best_chromo.fitness)
 
-            # 2. Chủ nghĩa tinh hoa (Elitism)
-            # Sắp xếp giảm dần theo điểm fitness
+            # 2. Elitism
+            # Sort in descending order based on fitness score
             sorted_individuals = sorted(current_population.individuals, key=lambda c: c.fitness, reverse=True)
             elites = [c.clone() for c in sorted_individuals[:self.elitism_count]]
 
-            # 3. Chọn lọc cha mẹ (Selection)
+            # 3. Parent Selection
             parents = self.selection.select(current_population)
 
-            # 4 & 5. Lai ghép và Đột biến (Crossover & Mutation)
+            # 4 & 5. Crossover & Mutation
             offspring = []
-            # Duyệt qua từng cặp cha mẹ
+            # Iterate through parent pairs
             for i in range(0, len(parents) - 1, 2):
                 if len(offspring) >= (current_population.size() - self.elitism_count):
-                    break # Dừng lại nếu đã tạo đủ con cháu
+                    break # Stop if enough offspring have been created
 
                 parent1 = parents[i]
                 parent2 = parents[i+1]
@@ -53,13 +53,13 @@ class GeneticAlgorithm:
 
                 offspring.extend([child1, child2])
 
-            # Nếu danh sách con cháu bị dư 1 cá thể do lai ghép chẵn, ta sẽ cắt bớt
+            # Trim offspring list if it exceeds the required size due to paired crossover
             offspring = offspring[:current_population.size() - self.elitism_count]
 
-            # 6. Thay thế quần thể (Replacement)
+            # 6. Population Replacement
             current_population = Population(elites + offspring)
 
-        # Đánh giá thế hệ cuối cùng
+        # Evaluate the final generation
         for chromo in current_population.individuals:
             if chromo.fitness is None:
                 chromo.fitness = fitness_function(chromo.genes)

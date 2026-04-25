@@ -12,7 +12,7 @@ class Chromosome:
     @genes.setter
     def genes(self, new_genes: List[int]):
         self._genes = new_genes
-        self._fitness = None # Reset fitness nếu gen bị thay đổi
+        self._fitness = None # Reset fitness if genes are modified
 
     @property
     def fitness(self) -> float:
@@ -23,7 +23,7 @@ class Chromosome:
         self._fitness = value
 
     def clone(self) -> 'Chromosome':
-        """Tạo ra một bản sao độc lập của nhiễm sắc thể."""
+        """Creates an independent copy of the chromosome."""
         clone_chromo = Chromosome(self._genes.copy())
         clone_chromo.fitness = self._fitness
         return clone_chromo
@@ -41,10 +41,10 @@ class Population:
         return self._individuals
 
     def get_best_individual(self) -> Chromosome:
-        # Lọc ra những cá thể đã được đánh giá fitness
+        # Filter out individuals that have been evaluated for fitness
         evaluated = [c for c in self._individuals if c.fitness is not None]
         if not evaluated:
-            raise ValueError("Chưa có cá thể nào được đánh giá điểm fitness.")
+            raise ValueError("No individual has been evaluated for fitness yet.")
         return max(evaluated, key=lambda chromo: chromo.fitness)
 
     def size(self) -> int:

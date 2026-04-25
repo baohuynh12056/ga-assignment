@@ -12,16 +12,16 @@ REPORT_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "reports"))
 os.makedirs(REPORT_DIR, exist_ok=True)
 
 def run_experiment(problem_name, fitness_func, length=100, pop_size=100, max_gen=300):
-    print(f"--- Đang giải bài toán {problem_name} bằng FP ---")
+    print(f"--- Solving problem {problem_name} using FP ---")
     
     random.seed(42)
     
-    # Khởi tạo dữ liệu gen đầu vào (Dùng Tuple để đảm bảo Immutability)
+    # Initialize input gene data (Use Tuple to ensure Immutability)
     initial_pop_genes = tuple(generate_random_genes(length) for _ in range(pop_size))
     
     start_time = time.time()
     
-    # Gọi hàm xử lý luồng GA
+    # Call the GA pipeline function
     result = run_ga(
         initial_pop_genes=initial_pop_genes,
         fitness_func=fitness_func,
@@ -33,10 +33,10 @@ def run_experiment(problem_name, fitness_func, length=100, pop_size=100, max_gen
     
     runtime = time.time() - start_time
     
-    print(f"Điểm Fitness tốt nhất: {result['best_fitness']}")
-    print(f"Thời gian chạy: {runtime:.4f} giây\n")
+    print(f"Best Fitness: {result['best_fitness']}")
+    print(f"Runtime: {runtime:.4f} seconds\n")
     
-    # Vẽ đồ thị
+    # Plot the convergence curve
     plt.figure(figsize=(10, 5))
     plt.plot(result["history"], label='Best Fitness', color='green')
     plt.title(f'GA Convergence (FP) - {problem_name}')
@@ -45,6 +45,7 @@ def run_experiment(problem_name, fitness_func, length=100, pop_size=100, max_gen
     plt.grid(True)
     plt.legend()
     
+    # Dynamic file naming to prevent overwriting
     if "OneMax" in problem_name:
         base_name = "onemax"
     elif "Knapsack" in problem_name:
@@ -52,7 +53,7 @@ def run_experiment(problem_name, fitness_func, length=100, pop_size=100, max_gen
     elif "FeatureSelection" in problem_name:
         base_name = "feature_selection"
     else:
-        base_name = "{other_problem}"
+        base_name = "other_problem"
 
     filename = f"{base_name}_curve_fp.png"
     plt.savefig(os.path.join(REPORT_DIR, filename))
@@ -69,23 +70,23 @@ def run_experiment(problem_name, fitness_func, length=100, pop_size=100, max_gen
 def main():
     results = {}
     
-    # OneMax
+    # 1. Run OneMax
     results["OneMax"] = run_experiment("OneMax", onemax_fitness)
     
-    # Knapsack
+    # 2. Run Knapsack
     knapsack_fitness = make_knapsack_fitness(num_items=100, seed=42)
     results["Knapsack"] = run_experiment("0/1 Knapsack", knapsack_fitness)
     
-    # 3. [BONUS EXTENSION] Chạy bài toán Feature Selection (FP)
+    # 3. [BONUS EXTENSION] Run Feature Selection problem (FP)
     feature_selection_fitness = make_feature_selection_fitness(total_features=100, seed=42)
     results["FeatureSelection"] = run_experiment("FeatureSelection", feature_selection_fitness, length=100)
 
-    # Lưu file JSON
+    # Save results to JSON file
     json_path = os.path.join(REPORT_DIR, "results_fp.json")
     with open(json_path, 'w') as f:
         json.dump(results, f, indent=4)
         
-    print(f"Đã lưu kết quả FP vào {REPORT_DIR}")
+    print(f"Saved FP results to {REPORT_DIR}")
 
 if __name__ == "__main__":
     main()

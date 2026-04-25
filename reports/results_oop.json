@@ -2,7 +2,7 @@
     "OneMax": {
         "problem": "OneMax",
         "best_fitness": 100.0,
-        "runtime_seconds": 0.13862109184265137,
+        "runtime_seconds": 0.14471960067749023,
         "best_solution": [
             1,
             1,
@@ -412,7 +412,7 @@
     "Knapsack": {
         "problem": "0/1 Knapsack",
         "best_fitness": 3758.0,
-        "runtime_seconds": 0.2591431140899658,
+        "runtime_seconds": 0.27025461196899414,
         "best_solution": [
             1,
             1,
@@ -822,7 +822,7 @@
     "FeatureSelection": {
         "problem": "FeatureSelection",
         "best_fitness": 108.88257037587866,
-        "runtime_seconds": 0.23351669311523438,
+        "runtime_seconds": 0.2371382713317871,
         "best_solution": [
             0,
             0,
